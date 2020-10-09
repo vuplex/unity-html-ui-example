@@ -1,0 +1,119 @@
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.8);
+  padding-top: 10vh;
+  transition: opacity 2s linear;
+}
+
+.signin {
+  background-color: white;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 450px;
+  padding: 45px 0;
+}
+
+.signin > div {
+  width: 95%;
+  margin: 0 auto;
+  position: relative;
+}
+
+h1 {
+  font-family: 'Futura', Helvetica, Arial, sans-serif;
+  text-align: center;
+  color: #10abd5;
+  margin: 0;
+}
+
+p {
+  text-align: center;
+  margin: 25px 0;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+input {
+  display: block;
+  margin: 15px auto;
+  width: 100%;
+  max-width: 200px;
+  font-size: inherit;
+  color: inherit;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+button {
+  font-size: inherit;
+  background-color: #10abd5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  display: block;
+  margin: 15px auto;
+  width: 100%;
+  max-width: 222px;
+  padding: 8px 10px;
+  position: relative;
+  font-family: inherit;
+}
+
+button:disabled:not(.loading) {
+  background-color: #b8b8b8;
+}
+
+.loading span {
+  opacity: 0;
+}
+
+.spinner {
+  display: none;
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+}
+
+.loading .spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner img {
+  height: 70%;
+}
+
+a {
+  font-size: 0.9em;
+  display: block;
+  color: #10abd5;
+  text-align: center;
+}
+
+#error {
+  font-size: 0.8em;
+  text-align: center;
+  color: #cc2900;
+  display: none;
+}
+
+#success-message {
+  display: none;
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+
+}
+
+#success-message h1 {
+  font-size: 2em;
+}
+
+#success-message span {
+  color: #32a852;
+  font-size: 1.4em;
+}

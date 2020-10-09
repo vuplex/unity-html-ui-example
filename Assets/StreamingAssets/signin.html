@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Make the background transparent (https://support.vuplex.com/articles/how-to-make-a-webview-transparent) -->
+    <meta name="transparent" content="true">
+    <link href="./styles.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="signin">
+      <div>
+        <h1>Welcome!</h1>
+        <p>
+          Please sign in to get started.
+        </p>
+        <input id="email" type="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Password">
+        <span id="error">The email or password is incorrect.</span>
+        <button disabled>
+          <span>Sign in</span>
+          <div class="spinner">
+            <img src="spinner.svg">
+          </div>
+        </button>
+        <a>Sign in later</a>
+        <div id="success-message">
+          <div>
+            <h1><span>✓</span> You're logged in</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Get references to the interactive elements
+      // so that we can script their behavior.
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const submitButton = document.getElementsByTagName('button')[0];
+      const errorMessage = document.getElementById('error');
+      const successMessage = document.getElementById('success-message');
+      const signInLaterLink = document.getElementsByTagName('a')[0];
+
+      // Attach the submit button click handler.
+      submitButton.onclick = async () => {
+        // Disable the controls while making the authentication request.
+        submitButton.setAttribute('disabled', true);
+        submitButton.classList.add('loading');
+        emailInput.setAttribute('disabled', true);
+        passwordInput.setAttribute('disabled', true);
+
+        let authToken = null;
+        try {
+          // Make an HTTP request to a mock authentication API that
+          // returns an auth token if the email address is valid and
+          // the password is "password".
+          const response = await fetch('https://api.vuplex.com/examples/fake-auth', {
+            method: 'post',
+            body: JSON.stringify({
+              email: emailInput.value,
+              password: passwordInput.value
+            })
+          });
+          if (response.ok) {
+            const body = await response.json();
+            authToken = body.authToken;
+          }
+        } catch (error) {
+          console.log('Unexpected error occurred during authentication: ' + error);
+        }
+
+        if (authToken) {
+          // Fade out the UI to transparent
+          successMessage.style.display = 'flex';
+          document.body.style.opacity = 0;
+          // Post a message to the C# code to send the auth token (https://support.vuplex.com/articles/how-to-send-messages-from-javascript-to-c-sharp).
+          vuplex.postMessage('auth_success:' + authToken);
+        } else {
+          // Authentication failed, so show an error message.
+          errorMessage.style.display = 'block';
+          submitButton.removeAttribute('disabled');
+          emailInput.removeAttribute('disabled');
+          passwordInput.removeAttribute('disabled');
+          submitButton.classList.remove('loading');
+        }
+      };
+
+      // Attach the click handler for the "Sign in later" link.
+      signInLaterLink.onclick = () => {
+        // Fade out the UI to transparent
+        document.body.style.transitionDuration = '0.5s';
+        document.body.style.opacity = 0;
+        // Post a message to the C# code to indicate auth was skipped.
+        vuplex.postMessage('auth_skipped');
+      };
+
+      // Attach handlers for form validation.
+      emailInput.oninput = enableOrDisableSubmitButton;
+      passwordInput.oninput = enableOrDisableSubmitButton;
+
+      function enableOrDisableSubmitButton() {
+        // Only enable the submit button if both the
+        // email and password are filled out.
+        errorMessage.style.display = 'none';
+        const submitButtonEnabled = !submitButton.getAttribute('disabled');
+        const emailIsValid = emailInput.value.trim().length;
+        const passwordIsValid = passwordInput.value.trim().length;
+        const emailAndPasswordAreValid =  emailIsValid && passwordIsValid;
+        if (submitButtonEnabled !== emailAndPasswordAreValid) {
+          if (emailAndPasswordAreValid) {
+            submitButton.removeAttribute('disabled');
+          } else {
+            submitButton.setAttribute('disabled', true);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
