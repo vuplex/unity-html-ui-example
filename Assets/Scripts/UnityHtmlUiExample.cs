@@ -33,13 +33,9 @@ class UnityHtmlUiExample : MonoBehaviour {
 
     void _setUpKeyboard() {
 
-        // Enable the native keyboard on mobile.
-        // https://developer.vuplex.com/webview/AndroidWebView#SetNativeKeyboardEnabled
-        #if UNITY_ANDROID && !UNITY_EDITOR
-            AndroidWebView.SetNativeKeyboardEnabled(true);
-        #elif UNITY_IOS && !UNITY_EDITOR
-            iOSWebView.SetNativeKeyboardEnabled(true);
-        #endif
+        // Enable the native keyboard on Android and iOS.
+        // https://developer.vuplex.com/webview/Web#SetTouchScreenKeyboardEnabled
+        Web.SetTouchScreenKeyboardEnabled(true);
 
         // Send keys from the hardware keyboard to the webview.
         _hardwareKeyboardListener = HardwareKeyboardListener.Instantiate();
