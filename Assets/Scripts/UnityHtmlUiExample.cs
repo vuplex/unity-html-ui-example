@@ -1,19 +1,19 @@
 using UnityEngine;
 using Vuplex.WebView;
-using Vuplex.WebView.Demos;
 
 class UnityHtmlUiExample : MonoBehaviour {
 
     CanvasWebViewPrefab _canvasWebViewPrefab;
-    HardwareKeyboardListener _hardwareKeyboardListener;
 
     async void Start() {
 
+        // Get a reference to the CanvasWebViewPrefab.
+        // https://support.vuplex.com/articles/how-to-reference-a-webview
         // The CanvasWebViewPrefab's `InitialUrl` property is set via the editor, so it
         // will automatically initialize itself with that URL.
         _canvasWebViewPrefab = GameObject.Find("CanvasWebViewPrefab").GetComponent<CanvasWebViewPrefab>();
 
-        _setUpKeyboard();
+        // Wait for the prefab to initialize because its WebView property is null until then.
         // https://developer.vuplex.com/webview/WebViewPrefab#WaitUntilInitialized
         await _canvasWebViewPrefab.WaitUntilInitialized();
 
@@ -27,21 +27,6 @@ class UnityHtmlUiExample : MonoBehaviour {
                 Debug.Log("Signin succeeded! Auth token: " + authToken);
             } else if (message.StartsWith("auth_skipped")) {
                 Debug.Log("Signin skipped");
-            }
-        };
-    }
-
-    void _setUpKeyboard() {
-
-        // Send keys from the hardware keyboard to the webview.
-        _hardwareKeyboardListener = HardwareKeyboardListener.Instantiate();
-        _hardwareKeyboardListener.InputReceived += (sender, eventArgs) => {
-            // Include key modifiers if the webview supports them.
-            var webViewWithKeyModifiers = _canvasWebViewPrefab.WebView as IWithKeyModifiers;
-            if (webViewWithKeyModifiers == null) {
-                _canvasWebViewPrefab.WebView.HandleKeyboardInput(eventArgs.Value);
-            } else {
-                webViewWithKeyModifiers.HandleKeyboardInput(eventArgs.Value, eventArgs.Modifiers);
             }
         };
     }
